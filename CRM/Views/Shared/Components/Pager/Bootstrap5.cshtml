@@ -10,14 +10,14 @@
 {
 <ul class="pagination pagination-sm">
 
-    @*@if (start > 1)
+    @if (start > 1)
         {
             <li class="page-item">
                 <a href="@Url.Action(Model.Action, Model.GetRouteValueForPage(1))" aria-label="First" class="page-link">
                     <span aria-hidden="true">First</span>
                 </a>
             </li>
-        }*@
+        }
 
     @if (this.Model.PageIndex > 1)
     {
@@ -39,14 +39,14 @@
     @for (int i = start; i <= stop; i++)
     {
         <li class="page-item @((Model.PageIndex == i) ? "active" : null)">
-            @*@if (i == 1)
+            @if (i == 1)
                 {
                     @Html.ActionLink("First", Model.Action, Model.GetRouteValueForPage(i), new { @class = "page-link" })
                 }
                 else
-                {*@
+                {
             @Html.ActionLink(i.ToString(), Model.Action, Model.GetRouteValueForPage(i), new { @class = "page-link" })
-            @*}*@
+            }
 
         </li>
     }
