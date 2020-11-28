@@ -1,0 +1,64 @@
+@model CRM.Models.User
+
+@{ ViewData["Title"] = "Delete"; }
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete your account?</h3>
+<div>
+    <h4>My Account</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Surname)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Surname)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateOfBirth)
+        </dt>
+        <dd class="col-sm-10">
+            @Convert.ToDateTime(Model.DateOfBirth).ToString("dd.MM.yyyy")
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Login)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Login)
+        </dd>
+        @*<dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Password)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Password)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.RoleId)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.RoleId)
+            </dd>*@
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Home</a>
+    </form>
+</div>
+
+@if (ViewBag.Message != null)
+{
+<script type="text/javascript">
+
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+</script>} 

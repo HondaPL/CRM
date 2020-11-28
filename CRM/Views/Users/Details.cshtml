@@ -1,0 +1,70 @@
+@model CRM.Models.User
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Surname)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Surname)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateOfBirth)
+        </dt>
+        <dd class="col-sm-10">
+            @Convert.ToDateTime(Model.DateOfBirth).ToString("dd.MM.yyyy")
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Login)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Login)
+        </dd>
+        @*@if (User.FindFirst("role").Value == "Admin" || (User.FindFirst("role").Value == "Moderator" && Model.RoleId == "3"))
+        {
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Password)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Password)
+        </dd>
+        }*@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RoleId)
+        </dt>
+        <dd class="col-sm-10">
+            <a asp-controller="Roles" asp-action="Details" asp-route-id="@Model.RoleId"> @Html.DisplayFor(model => model.RoleId) - @ViewBag.roles[Convert.ToInt32(Model.RoleId) - 1] </a>
+            @*@Html.DisplayFor(model => model.RoleId)*@
+        </dd>
+    </dl>
+    @*<dl>
+        <dt>
+            a
+        </dt>
+        <dd>
+            b
+        </dd>
+    </dl>*@
+</div>
+<div>
+    @if (User.FindFirst("role").Value == "Admin" || User.FindFirst("role").Value == "Moderator")
+    {
+        <a asp-action="Edit" class="btn btn-primary" asp-route-id="@Model.Id">Edit</a>
+        @*<span> | </span>*@
+    }
+    <a asp-action="Index" class="btn btn-secondary">Back to List of Users</a>
+</div>

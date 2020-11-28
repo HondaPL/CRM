@@ -1,0 +1,47 @@
+@model CRM.Models.Note
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Note</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Content)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Content)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CompanyId)
+        </dt>
+        <dd class="col-sm-10">
+            <a asp-controller="Companies" asp-action="Details" asp-route-id="@Model.CompanyId">@Html.DisplayFor(model => model.CompanyId) @ViewBag.data[Convert.ToInt32(Model.CompanyId)]</a>
+            @*@Html.DisplayFor(model => model.CompanyId)*@
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.UserId)
+        </dt>
+        <dd class = "col-sm-10">
+            @if (Model.UserId != ViewBag.UserId)
+            {
+                <a asp-controller="Users" asp-action="Details" asp-route-id="@Model.UserId">@Html.DisplayFor(model => model.UserId) @ViewBag.data2[Convert.ToInt32(Model.UserId)]</a>
+            } else
+            {
+                <a asp-controller="Accounts" asp-action="Details">@Html.DisplayFor(model => model.UserId) @ViewBag.data2[Convert.ToInt32(Model.UserId)]</a>
+            }
+            @*@Html.DisplayFor(model => model.UserId)*@
+        </dd>
+    </dl>
+</div>
+<div>
+    @if (Model.UserId == ViewBag.UserId)
+    {
+        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+    }
+    <a class="btn btn-secondary" asp-action="Index">Back to List Of Notes</a>
+</div>

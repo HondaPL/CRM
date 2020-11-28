@@ -1,0 +1,79 @@
+@model CRM.Models.User
+
+@{ ViewData["Title"] = "Edit"; }
+
+<h1>Edit</h1>
+
+<h4>My Account</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Surname" class="control-label"></label>
+                <input asp-for="Surname" class="form-control" />
+                <span asp-validation-for="Surname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfBirth" class="control-label"></label>
+                <input type="date" asp-for="DateOfBirth" class="form-control" min="1910-01-01" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Login" class="control-label"></label>
+                <input asp-for="Login" class="form-control" />
+                <span asp-validation-for="Login" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" class="form-control" type="password" value="@Model.Password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            @if (User.FindFirst("role").Value == "Admin")
+            {
+<div class="form-group">
+    <label asp-for="RoleId" class="control-label"></label>
+    @*<input asp-for="RoleId" class="form-control" value="@Model.RoleId"/>*@
+    <select asp-for="RoleId" class="form-control" value="@Model.RoleId">
+        <option value="1">1 - Admin</option>
+        <option value="2">2 - Moderator</option>
+        <option value="3">3 - User</option>
+    </select>
+    <span asp-validation-for="RoleId" class="text-danger"></span>
+</div> }
+            else
+            {
+<div class="form-group">
+    <label asp-for="RoleId" class="control-label"></label>
+    <input asp-for="RoleId" class="form-control" value="@Model.RoleId" readonly />
+    <span asp-validation-for="RoleId" class="text-danger"></span>
+</div>            }
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Details" class="btn btn-secondary">Back to Account</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+@if (ViewBag.Message != null)
+{
+<script type="text/javascript">
+
+            window.onload = function () {
+                alert("@ViewBag.Message");
+            };
+</script>}

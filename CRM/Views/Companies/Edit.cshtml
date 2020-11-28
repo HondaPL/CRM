@@ -1,0 +1,66 @@
+@model CRM.Models.Company
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Company</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NIP" class="control-label"></label>
+                <input asp-for="NIP" class="form-control" />
+                <span asp-validation-for="NIP" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BusinessId" class="control-label"></label>
+                @*<input asp-for="Company.BusinessId" class="form-control" />*@
+                <select asp-for="BusinessId" class="form-control">
+                    @foreach (var item in ViewBag.data)
+                    {
+                        <option value="@Convert.ToUInt32(item.Id)">@item.Name</option>           
+                    }
+                </select>
+                <span asp-validation-for="BusinessId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <input asp-for="UserId" class="form-control" readonly/>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="CreationDate" />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

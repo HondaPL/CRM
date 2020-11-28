@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CRM App</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        nav ul li a {
+            float: left;
+            font-size: 16px;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+        .active a{
+            color: black;
+            text-decoration: none;
+            touch-action: none;
+        }
+        .wrapper {
+	        margin-top: 80px;
+            margin-bottom: 80px;
+        }
+
+        .form-signin {
+            max-width: 380px;
+            padding: 15px 35px 45px;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .form-signin-heading,
+	    .checkbox {
+	        margin-bottom: 30px;
+	    }
+
+	    .checkbox {
+	        font-weight: normal;
+	    }
+
+	    .form-control {
+	          position: relative;
+	          font-size: 16px;
+	          height: auto;
+	          padding: 10px;
+	    }
+
+	    input[type="text"] {
+	          margin-bottom: -1px;
+	          border-bottom-left-radius: 0;
+	          border-bottom-right-radius: 0;
+	    }
+
+	    input[type="password"] {
+	          margin-bottom: 20px;
+	          border-top-left-radius: 0;
+	          border-top-right-radius: 0;
+	    }
+        td {
+            @*word-break: break-all;*@
+            @*word-break: break-word;*@
+            word-wrap: break-word;
+            line-break: auto;
+        }
+    }
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">CRM App</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                        <ul class="navbar-nav flex-grow-1">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Companies" asp-action="Index">Companies</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Notes" asp-action="Index">Notes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Contacts" asp-action="Index">Contact People</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
+                            </li>
+                            <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Business" asp-action="Index">Businesses</a>
+                    </li>
+                            @*@if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                    }*@
+                        </ul>
+                    </div>
+                }
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2020 - CRM App |
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Accounts" asp-action="Details" style="color:black">@User.FindFirst("user").Value</a>
+                <span> </span>
+                <span style="color:red">@User.FindFirst("role").Value</span>
+                @*@foreach (var claim in User.Claims)
+                {
+                    @claim.Value
+                    <span> </span>
+                }
+                @if (User.FindFirst("role").Value == "Admin")
+                {
+                    <span style="color:black">@User.FindFirst("role").Value</span>
+                }*@
+                <a asp-area="" asp-controller="Accounts" asp-action="Logout">Logout</a>
+            }
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

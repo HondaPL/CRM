@@ -1,0 +1,64 @@
+@model IEnumerable<CRM.Models.Note>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Notes</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New Note</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th width="55%">
+                @Html.DisplayNameFor(model => model.Content)
+            </th>
+            <th width="10%">
+                @Html.DisplayNameFor(model => model.CompanyId)
+            </th>
+            <th width="10%">
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th width="25%"></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td style="word-break:break-word">  
+                @Html.DisplayFor(modelItem => item.Content)
+            </td>
+            <td>
+                <a asp-controller="Companies" asp-action="Details" asp-route-id="@item.CompanyId">@Html.DisplayFor(modelItem => item.CompanyId) @ViewBag.data[Convert.ToInt32(item.CompanyId)]</a>
+                @*@Html.DisplayFor(modelItem => item.CompanyId)*@
+            </td>
+            <td>
+            @if (item.UserId != ViewBag.UserId)
+            {
+                <a asp-controller="Users" asp-action="Details" asp-route-id="@item.UserId">@Html.DisplayFor(modelItem => item.UserId) @ViewBag.data2[Convert.ToInt32(item.UserId)]</a>
+            } else
+            {
+                <a asp-controller="Accounts" asp-action="Details">@Html.DisplayFor(modelItem => item.UserId) @ViewBag.data2[Convert.ToInt32(item.UserId)]</a>
+            }                @*@Html.DisplayFor(modelItem => item.UserId)*@
+            </td>
+            <td>
+            @if (item.UserId == ViewBag.UserId)
+            {
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+            } else
+            {
+            
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+                @*@item.UserId
+                <span> | </span>
+                @ViewBag.UserId*@
+            }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

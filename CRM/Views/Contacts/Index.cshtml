@@ -1,0 +1,96 @@
+@model IEnumerable<CRM.Models.Contact>
+
+@{ ViewData["Title"] = "Index"; }
+
+<h1>Contacts</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New Contact</a>
+    <a asp-action="Index" class="btn btn-danger">Clear filters</a>
+</p>
+<form method="get" class="form-inline">
+    <input style="margin-right:3px" name="filter" class="form-control" placeholder="Last Names Filter" value="@ViewBag.filter"/>
+    <br />
+    <button type="submit" class="btn btn-info">
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
+    </button>
+</form>
+<br />
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th width="10%">
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th width="10%">
+                @Html.DisplayNameFor(model => model.Surname)
+            </th>
+            <th width="11%">
+                @Html.DisplayNameFor(model => model.Phone)
+            </th>
+            <th width="11%">
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th width="11%">
+                @Html.DisplayNameFor(model => model.Position)
+            </th>
+            <th width="11%">
+                @Html.DisplayNameFor(model => model.CompanyId)
+            </th>
+            <th width="11%">
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th width="25%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Surname)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Phone)
+    </td>
+    <td>
+        <a href="mailto: @item.Email ?subject= &body= ">@Html.DisplayFor(modelItem => item.Email)</a>
+        @*@Html.DisplayFor(modelItem => item.Email)*@
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Position)
+    </td>
+    <td>
+        <a asp-controller="Companies" asp-action="Details" asp-route-id="@item.CompanyId">@Html.DisplayFor(modelItem => item.CompanyId) @ViewBag.data[Convert.ToInt32(item.CompanyId)]</a>
+        @*@Html.DisplayFor(modelItem => item.CompanyId)*@
+    </td>
+    <td>
+        @if (item.UserId != ViewBag.UserId)
+        {
+            <a asp-controller="Users" asp-action="Details" asp-route-id="@item.UserId">@Html.DisplayFor(modelItem => item.UserId) @ViewBag.data2[Convert.ToInt32(item.UserId)]</a>
+        } else
+        {
+            <a asp-controller="Accounts" asp-action="Details">@Html.DisplayFor(modelItem => item.UserId) @ViewBag.data2[Convert.ToInt32(item.UserId)]</a>
+        }        @*@Html.DisplayFor(modelItem => item.UserId)*@
+    </td>
+    <td>
+    @if (item.UserId == ViewBag.UserId)
+    {
+        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+    } else
+    {
+            
+        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+        @*@item.UserId
+        <span> | </span>
+        @ViewBag.UserId*@
+    }
+    </td>
+</tr>}
+    </tbody>
+</table>

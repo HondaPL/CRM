@@ -1,0 +1,184 @@
+@model ReflectionIT.Mvc.Paging.PagingList<CRM.Models.Company>
+@using ReflectionIT.Mvc.Paging
+@addTagHelper *, ReflectionIT.Mvc.Paging
+
+@{ ViewData["Title"] = "Index"; }
+
+<style>
+    ul {
+        -webkit-column-count: 4;
+        -moz-column-count: 4;
+        column-count: 4;
+    }
+</style>
+
+
+
+<h1>Companies</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Company</a>
+    <a asp-action="Index" class="btn btn-danger">Clear filters</a>
+</p>
+<form method="get" class="form-inline">
+    @*<input style="margin-right:3px" name="filter" class="form-control" placeholder="Businesses Filter" value="@Model.RouteValue["Filter"]"
+        />*@
+    <br />
+    <label>From:</label>
+    <input max="@DateTime.Now.ToString("yyyy-MM-dd")" value="@ViewBag.start" type="date" style="margin-right:3px" id="start" name="start" class="form-control" placeholder="Businesses Filter" />
+    <label>To:</label>
+    <input max="@DateTime.Now.ToString("yyyy-MM-dd")" value="@ViewBag.end" type="date" style="margin-right:3px" id="end" name="end" class="form-control" placeholder="Businesses Filter" />
+    <script type="text/javascript">
+        document.getElementById("start").onchange = function () {
+            document.getElementById("end").setAttribute("min", this.value);
+        }
+        document.getElementById("start").onchange();
+    </script>
+    @*@Html.TextBox("start", null, new { @class = "form-control datepicker" })*@
+    @*@Html.TextBox("end", null, new { @class = "form-control datepicker" })*@
+    @*<br />*@
+    <ul>
+        @for (int i = 1; i < ViewBag.data.Length; i++)
+        {
+            @if (ViewBag.data[i] != null)
+            {
+            bool tick = false;
+            <label>
+                @if(ViewBag.selected != null)
+                {
+                    @for (int j = 0; j < ViewBag.selected.Length; j++)
+                    {
+                        @if(ViewBag.selected[j] == Convert.ToString(i))
+                        {
+                            tick = true;
+                            break;
+                        }
+                    }
+                }
+                @if (!tick)
+                {
+                    <input type="checkbox" name="selected" value="@i" />
+                } else
+                {
+                    <input checked type="checkbox" name="selected" value="@i" />
+                }
+                <span>@ViewBag.data[i]</span>
+            </label>
+            }
+        }
+    </ul>
+    @*<ul>
+        @for (int i = 5; i < 9; i++)
+        {
+            @if (ViewBag.data[i] != null)
+            {
+            <label>
+                <input type="checkbox" name="selected" value="@i" />
+                <span>@ViewBag.data[i]</span>
+            </label>
+            }
+        }
+    </ul>
+    <ul>
+        @for (int i = 9; i < ViewBag.data.Length; i++)
+        {
+            @if (ViewBag.data[i] != null)
+            {
+            <label>
+                <input type="checkbox" name="selected" value="@i" />
+                <span>@ViewBag.data[i]</span>
+            </label>
+            }
+        }
+    </ul>*@
+    <button type="submit" class="btn btn-info" style="margin-left:10px">
+        <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
+    </button>
+    
+</form>
+<br />
+<nav>
+    @await this.Component.InvokeAsync("Pager", new { pagingList = this.Model })
+</nav>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th width="10%">
+                @Html.SortableHeaderFor(model => model.Name)
+            </th>
+            <th width="10%">
+                @Html.SortableHeaderFor(model => model.NIP)
+            </th>
+            <th width="11%">
+                @Html.SortableHeaderFor(model => model.BusinessId)
+            </th>
+            <th width="11%">
+                @Html.SortableHeaderFor(model => model.Address)
+            </th>
+            <th width="11%">
+                @Html.SortableHeaderFor(model => model.City)
+            </th>
+            <th width="11%">
+                @Html.SortableHeaderFor(model => model.UserId)
+            </th>
+            <th width="11%">
+                @Html.SortableHeaderFor(model => model.CreationDate)
+            </th>
+            <th width="25%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.NIP)
+    </td>
+    <td>
+        <a asp-controller="Business" asp-action="Details" asp-route-id="@item.BusinessId">@Html.DisplayFor(modelItem => item.BusinessId) @ViewBag.data[Convert.ToInt32(item.BusinessId)]</a>
+        @*@Html.DisplayFor(modelItem => item.BusinessId)*@
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Address)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.City)
+    </td>
+    <td>
+        @if (item.UserId != ViewBag.UserId)
+        {
+            <a asp-controller="Users" asp-action="Details" asp-route-id="@item.UserId">@Html.DisplayFor(modelItem => item.UserId) @ViewBag.data2[Convert.ToInt32(item.UserId)]</a>
+        } else
+        {
+            <a asp-controller="Accounts" asp-action="Details">@Html.DisplayFor(modelItem => item.UserId) @ViewBag.data2[Convert.ToInt32(item.UserId)]</a>
+        }
+        @*@Html.DisplayFor(modelItem => item.UserId)*@
+    </td>
+    <td>
+        @Convert.ToDateTime(item.CreationDate).ToString("dd.MM.yyyy")
+    </td>
+    <td>
+        <a asp-controller="Notes" asp-action="Create" asp-route-com="@item.Id"  class="btn btn-primary" style="margin-bottom:4px">Add Note</a>
+        <a asp-controller="Contacts" asp-action="Create" asp-route-com="@item.Id" class="btn btn-primary" style="margin-bottom:4px">Add Contact</a>
+        <br />
+        @if (item.UserId == ViewBag.UserId)
+        {
+            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+        } else
+        {
+            
+            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+            @*@item.UserId
+            <span> | </span>
+            @ViewBag.UserId*@
+        }
+    </td>
+</tr>}
+    </tbody>
+</table>
+

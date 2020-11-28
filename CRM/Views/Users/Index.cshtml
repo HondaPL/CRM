@@ -1,0 +1,97 @@
+@model ReflectionIT.Mvc.Paging.PagingList<CRM.Models.User>
+@using ReflectionIT.Mvc.Paging
+@addTagHelper *, ReflectionIT.Mvc.Paging
+
+@{ ViewData["Title"] = "Start"; }
+
+<h1>Users</h1>
+
+@*<h1>Index</h1>*@
+@if (User.FindFirst("role").Value == "Admin" || User.FindFirst("role").Value == "Moderator")
+{
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New User</a>
+</p>
+}
+<nav>
+    @await this.Component.InvokeAsync("Pager", new { pagingList = this.Model })
+</nav>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th width="15%">
+                    @Html.SortableHeaderFor(model => model.Name)
+                </th>
+                <th width="15%">
+                    @Html.SortableHeaderFor(model => model.Surname)
+                </th>
+                <th width="15%">
+                    @Html.SortableHeaderFor(model => model.DateOfBirth)
+                </th>
+                <th width="15%">
+                    @Html.SortableHeaderFor(model => model.Login)
+                </th>
+                @*@if (User.FindFirst("role").Value == "Admin")
+                                {
+                    <th>
+                        @Html.SortableHeaderFor(model => model.Password)
+                    </th>            }*@
+                <th width="15%">
+                    @Html.SortableHeaderFor(model => model.RoleId)
+                </th>
+                <th width="25%"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Surname)
+    </td>
+    <td>
+        @Convert.ToDateTime(item.DateOfBirth).ToString("dd.MM.yyyy")
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Login)
+    </td>
+    @*@if (User.FindFirst("role").Value == "Admin")
+            {
+        <th>
+            @Html.DisplayFor(modelItem => item.Password)
+        </th>
+            }*@
+    <td>
+       <a asp-controller="Roles" asp-action="Details" asp-route-id="@item.RoleId"> @Html.DisplayFor(modelItem => item.RoleId) - @ViewBag.roles[Convert.ToInt32(item.RoleId)-1] </a>
+    </td>
+    <td>
+        @if (User.FindFirst("user").Value != item.Login)
+        {
+            @if (User.FindFirst("role").Value == "Admin")
+            {
+                <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.Id">Edit</a> @*<span> | </span>*@
+                <a asp-action="Details" class="btn btn-info" asp-route-id="@item.Id">Details</a> @*<span> | </span>*@
+                <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id">Delete</a>
+            } else if (User.FindFirst("role").Value == "Moderator")
+            {
+                <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.Id">Edit</a> @*<span> | </span>*@
+                <a asp-action="Details" class="btn btn-info" asp-route-id="@item.Id">Details</a>
+            } else
+            {
+                <a asp-action="Details" class="btn btn-info" asp-route-id="@item.Id">Details</a>
+            }
+        } else
+        {
+            <a asp-controller="Accounts" asp-action="Edit" class="btn btn-primary" asp-route-id="@item.Id">Edit</a> @*<span> | </span>*@
+            <a asp-controller="Accounts" asp-action="Details" class="btn btn-info" asp-route-id="@item.Id">Details</a> @*<span> | </span>*@
+            <a asp-controller="Accounts" asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id">Delete</a>
+        }
+    </td>
+</tr>}
+        </tbody>
+    </table>
+
