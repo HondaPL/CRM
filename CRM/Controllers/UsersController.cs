@@ -33,7 +33,7 @@ namespace CRM.Controllers
         [Authorize]
         public async Task<IActionResult> Index(int page = 1, string sortExpression = "Id")
         {
-            var qry = _context.User.AsNoTracking().OrderBy(p => p.Id);
+            var qry = _context.User.AsNoTracking().OrderBy(p => p.Id).Where(p => p.IsDeleted == 0);
             var model = await PagingList.CreateAsync(qry, 6, page, sortExpression, "Id");
             string[] roles = { "Admin" , "Moderator", "User"};
             ViewBag.roles = roles;
@@ -72,13 +72,14 @@ namespace CRM.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Surname,DateOfBirth,Login,Password,RoleId")] User user)
+        public async Task<IActionResult> Create( User user)
         {
             try
             {
                 var user1 = await _context.User.AsNoTracking().FirstOrDefaultAsync(m => m.Login == user.Login);
                 if (user1 == null) { 
                     user.Password = HashPassword(user.Password);
+                    user.IsDeleted = 0;
                     _context.Add(user);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -117,13 +118,13 @@ namespace CRM.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,DateOfBirth,Login,Password,RoleId")] User user)
+        public async Task<IActionResult> Edit(int id, User user)
         {
             if (id != user.Id)
             {
                 return NotFound();
             }
-            var adminnumber = await _context.User.CountAsync(m => m.RoleId == "1");
+            var adminnumber = await _context.User.CountAsync(m => m.RoleId == 1);
 
 
             //var user1 = await _context.User.FirstOrDefaultAsync(m => m.Login == user.Login);
@@ -143,7 +144,7 @@ namespace CRM.Controllers
                         //_context.Update(user1);
                         //_context.Remove(user1);
                         ViewBag.Message = null;
-                        if (adminnumber > 2 || user.RoleId == "1")
+                        if (adminnumber > 2 || user.RoleId == 1)
                         {
                             if (!IsMD5(user.Password))
                             {
@@ -237,27 +238,28 @@ namespace CRM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+
             var user = await _context.User.FindAsync(id);
-            var adminnumber = await _context.User.CountAsync(m => m.RoleId == "1");
+            var adminnumber = await _context.User.CountAsync(m => m.RoleId == 1);
             Console.Write(adminnumber);
             ViewBag.Message = null;
-            if (adminnumber > 2 || user.RoleId != "1") {
-                var companyNumber = await _context.Company.CountAsync(m => m.UserId == Convert.ToString(user.Id));
+            if (adminnumber > 2 || user.RoleId != 1) {
+                /*var companyNumber = await _context.Company.CountAsync(m => m.UserId == user.Id);
                 while (companyNumber > 0)
                 {
-                    var companyToDelete = await _context.Company.FirstOrDefaultAsync(m => m.UserId == Convert.ToString(user.Id));
-                    var noteNumber = await _context.Note.CountAsync(m => m.CompanyId == Convert.ToString(companyToDelete.Id));
+                    var companyToDelete = await _context.Company.FirstOrDefaultAsync(m => m.UserId == user.Id);
+                    var noteNumber = await _context.Note.CountAsync(m => m.CompanyId == companyToDelete.Id);
                     while (noteNumber > 0)
                     {
-                        var noteToDelete = await _context.Note.FirstOrDefaultAsync(m => m.CompanyId == Convert.ToString(companyToDelete.Id));
+                        var noteToDelete = await _context.Note.FirstOrDefaultAsync(m => m.CompanyId == companyToDelete.Id);
                         _context.Note.Remove(noteToDelete);
                         await _context.SaveChangesAsync();
                         noteNumber--;
                     }
-                    var contactNumber = await _context.Contact.CountAsync(m => m.CompanyId == Convert.ToString(companyToDelete.Id));
+                    var contactNumber = await _context.Contact.CountAsync(m => m.CompanyId == companyToDelete.Id);
                     while (contactNumber > 0)
                     {
-                        var contactToDelete = await _context.Contact.FirstOrDefaultAsync(m => m.CompanyId == Convert.ToString(companyToDelete.Id));
+                        var contactToDelete = await _context.Contact.FirstOrDefaultAsync(m => m.CompanyId == companyToDelete.Id);
                         _context.Contact.Remove(contactToDelete);
                         await _context.SaveChangesAsync();
                         contactNumber--;
@@ -266,23 +268,25 @@ namespace CRM.Controllers
                     await _context.SaveChangesAsync();
                     companyNumber--;
                 }
-                var noteNumberU = await _context.Note.CountAsync(m => m.UserId == Convert.ToString(user.Id));
+                var noteNumberU = await _context.Note.CountAsync(m => m.UserId == user.Id);
                 while (noteNumberU > 0)
                 {
-                    var noteToDelete = await _context.Note.FirstOrDefaultAsync(m => m.UserId == Convert.ToString(user.Id));
+                    var noteToDelete = await _context.Note.FirstOrDefaultAsync(m => m.UserId == user.Id);
                     _context.Note.Remove(noteToDelete);
                     await _context.SaveChangesAsync();
                     noteNumberU--;
                 }
-                var contactNumberU = await _context.Contact.CountAsync(m => m.UserId == Convert.ToString(user.Id));
+                var contactNumberU = await _context.Contact.CountAsync(m => m.UserId == user.Id);
                 while (contactNumberU > 0)
                 {
-                    var contactToDelete = await _context.Contact.FirstOrDefaultAsync(m => m.UserId == Convert.ToString(user.Id));
+                    var contactToDelete = await _context.Contact.FirstOrDefaultAsync(m => m.UserId == user.Id);
                     _context.Contact.Remove(contactToDelete);
                     await _context.SaveChangesAsync();
                     contactNumberU--;
                 }
-                _context.User.Remove(user);
+                */
+                //_context.User.Remove(user);
+                user.IsDeleted = 1;
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }   else

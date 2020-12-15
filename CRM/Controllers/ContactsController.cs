@@ -25,9 +25,9 @@ namespace CRM.Controllers
         public async Task<IActionResult> Index(string filter)
         {
             var user = await _context.User.FirstOrDefaultAsync(m => m.Login == User.FindFirst("user").Value);
-            ViewBag.userId = Convert.ToString(user.Id);
+            ViewBag.userId = user.Id;
             List<Company> companiesList = _context.Company.ToList();
-            string[] companies = new string[100];
+            string[] companies = new string[companiesList[companiesList.Count - 1].Id + 1];
             var i = 1;
             foreach (var item in companiesList)
             {
@@ -36,7 +36,7 @@ namespace CRM.Controllers
             }
             ViewBag.data = companies;
             List<User> usersList = _context.User.ToList();
-            string[] users = new string[100];
+            string[] users = new string[usersList[usersList.Count - 1].Id + 1];
             var j = 1;
             foreach (var item in usersList)
             {
@@ -70,7 +70,7 @@ namespace CRM.Controllers
                 return NotFound();
             }
             List<Company> companiesList = _context.Company.ToList();
-            string[] companies = new string[100];
+            string[] companies = new string[companiesList[companiesList.Count - 1].Id + 1];
             var i = 1;
             foreach (var item in companiesList)
             {
@@ -79,7 +79,7 @@ namespace CRM.Controllers
             }
             ViewBag.data = companies;
             List<User> usersList = _context.User.ToList();
-            string[] users = new string[100];
+            string[] users = new string[usersList[usersList.Count - 1].Id + 1];
             var j = 1;
             foreach (var item in usersList)
             {
@@ -88,7 +88,7 @@ namespace CRM.Controllers
             }
             ViewBag.data2 = users;
             var user = await _context.User.FirstOrDefaultAsync(m => m.Login == User.FindFirst("user").Value);
-            ViewBag.userId = Convert.ToString(user.Id);
+            ViewBag.userId = user.Id;
             return View(contact);
         }
 
@@ -114,10 +114,11 @@ namespace CRM.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Surname,Phone,Email,Position,CompanyId,UserId")] Contact contact)
+        public async Task<IActionResult> Create( Contact contact)
         {
             if (ModelState.IsValid)
             {
+                contact.IsDeleted = 0;
                 _context.Add(contact);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -142,7 +143,7 @@ namespace CRM.Controllers
             }
             List<Company> companiesList = _context.Company.ToList();
             ViewBag.data = companiesList;
-            if (Convert.ToString(user.Id) != contact.UserId)
+            if (user.Id != contact.UserId)
             {
                 return NotFound();
             }
@@ -154,7 +155,7 @@ namespace CRM.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Surname,Phone,Email,Position,CompanyId,UserId")] Contact contact)
+        public async Task<IActionResult> Edit(int id, Contact contact)
         {
             if (id != contact.Id)
             {
@@ -200,12 +201,12 @@ namespace CRM.Controllers
             {
                 return NotFound();
             }
-            if (Convert.ToString(user.Id) != contact.UserId)
+            if (user.Id != contact.UserId)
             {
                 return NotFound();
             }
             List<Company> companiesList = _context.Company.ToList();
-            string[] companies = new string[100];
+            string[] companies = new string[companiesList[companiesList.Count - 1].Id + 1];
             var i = 1;
             foreach (var item in companiesList)
             {
@@ -214,7 +215,7 @@ namespace CRM.Controllers
             }
             ViewBag.data = companies;
             List<User> usersList = _context.User.ToList();
-            string[] users = new string[100];
+            string[] users = new string[usersList[usersList.Count - 1].Id + 1];
             var j = 1;
             foreach (var item in usersList)
             {
@@ -222,7 +223,7 @@ namespace CRM.Controllers
                 users[j] = item.Login;
             }
             ViewBag.data2 = users;
-            ViewBag.userId = Convert.ToString(user.Id);
+            ViewBag.userId = user.Id;
             return View(contact);
         }
 
@@ -232,7 +233,8 @@ namespace CRM.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var contact = await _context.Contact.FindAsync(id);
-            _context.Contact.Remove(contact);
+            contact.IsDeleted = 1;
+            //_context.Contact.Remove(contact);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

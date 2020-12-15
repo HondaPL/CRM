@@ -46,6 +46,8 @@
     <tbody>
         @foreach (var item in Model)
         {
+            @if (item.IsDeleted == 0)
+            {
 <tr>
     <td>
         @Html.DisplayFor(modelItem => item.Name)
@@ -71,7 +73,8 @@
         @if (item.UserId != ViewBag.UserId)
         {
             <a asp-controller="Users" asp-action="Details" asp-route-id="@item.UserId">@Html.DisplayFor(modelItem => item.UserId) @ViewBag.data2[Convert.ToInt32(item.UserId)]</a>
-        } else
+        }
+        else
         {
             <a asp-controller="Accounts" asp-action="Details">@Html.DisplayFor(modelItem => item.UserId) @ViewBag.data2[Convert.ToInt32(item.UserId)]</a>
         }        @*@Html.DisplayFor(modelItem => item.UserId)*@
@@ -82,9 +85,10 @@
         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
-    } else
+    }
+    else
     {
-            
+
         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
         @*@item.UserId
         <span> | </span>
@@ -92,5 +96,6 @@
     }
     </td>
 </tr>}
+        }
     </tbody>
 </table>

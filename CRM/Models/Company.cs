@@ -18,7 +18,7 @@ namespace CRM.Models
 
         //[Range(1, 3)]
         [Required(ErrorMessage = "Please Enter Id Of Business")]
-        public string BusinessId { get; set; }
+        public int BusinessId { get; set; }
 
         [StringLength(200, MinimumLength = 3)]
         [Required(ErrorMessage = "Please Enter Address")]
@@ -30,7 +30,7 @@ namespace CRM.Models
 
         //[Range(1, 3)]
         [Required(ErrorMessage = "Please Enter Id Of User")]
-        public string UserId { get; set; }
+        public int UserId { get; set; }
 
         [DataType(DataType.Date)]
         //[Range(typeof(DateTime), "1900-01-01", "2010-01-01" ,
@@ -38,5 +38,7 @@ namespace CRM.Models
         //[CustomDateRange(ErrorMessage = "wrong")]
         //[Date(ErrorMessage = "wrong")]
         public DateTime CreationDate { get; set; }
+
+        public int IsDeleted { get; set; }
     }
 }

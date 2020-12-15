@@ -35,7 +35,10 @@ namespace CRM.Models
 
         [Range(1,3)]
         [Required(ErrorMessage = "Please Enter Id Of Role")]
-        public string RoleId { get; set; }
+        public int RoleId { get; set; }
+
+        public int IsDeleted { get; set; }
+
     }
     //public class CustomDateRangeAttribute : RangeAttribute
     //{

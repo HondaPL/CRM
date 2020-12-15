@@ -37,7 +37,7 @@
             </td>
             <td>
                 @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |*@
-                @if (Convert.ToString(item.Id) == ViewBag.userId)
+                @if (item.Id == ViewBag.userId)
                 {
                     <a asp-controller="Accounts" class="btn btn-info" asp-action="Details">Details</a>
                 } else

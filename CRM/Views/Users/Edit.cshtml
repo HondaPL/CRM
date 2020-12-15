@@ -33,7 +33,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Password" class="control-label"></label>
-                @if (User.FindFirst("role").Value == "Admin" || (User.FindFirst("role").Value == "Moderator" && Model.RoleId == "3"))
+                @if (User.FindFirst("role").Value == "Admin" || (User.FindFirst("role").Value == "Moderator" && Model.RoleId == 3))
                 {
     <input asp-for="Password" class="form-control" type="password" value="@Model.Password" /> }
                 else

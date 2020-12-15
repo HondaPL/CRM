@@ -39,9 +39,9 @@ namespace CRM.Controllers
             var role = await _context.Role
                 .FirstOrDefaultAsync(m => m.Id == id);
             //var user = await _context.User.ToListAsync(m => m.IdRole == role.Id);
-            var user = await _context.User.Where(m => m.RoleId == Convert.ToString(role.Id)).ToListAsync();
+            var user = await _context.User.Where(m => m.RoleId == role.Id).ToListAsync();
             var usera = await _context.User.FirstOrDefaultAsync(m => m.Login == User.FindFirst("user").Value);
-            ViewBag.userId = Convert.ToString(usera.Id);
+            ViewBag.userId = usera.Id;
             if (role == null)
             {
                 return NotFound();

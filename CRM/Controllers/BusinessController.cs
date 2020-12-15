@@ -39,7 +39,7 @@ namespace CRM.Controllers
             var business = await _context.Business
                 .FirstOrDefaultAsync(m => m.Id == id);
             //var user = await _context.User.ToListAsync(m => m.IdRole == role.Id);
-            var company = await _context.Company.Where(m => m.BusinessId == Convert.ToString(business.Id)).ToListAsync();
+            var company = await _context.Company.Where(m => m.BusinessId == business.Id).ToListAsync();
             if (business == null)
             {
                 return NotFound();

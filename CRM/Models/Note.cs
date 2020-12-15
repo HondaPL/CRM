@@ -12,9 +12,11 @@ namespace CRM.Models
         public string Content { get; set; }
 
         [Required(ErrorMessage = "Please Enter Id Of Business")]
-        public string CompanyId { get; set; }
+        public int CompanyId { get; set; }
 
         [Required(ErrorMessage = "Please Enter Id Of User")]
-        public string UserId { get; set; }
+        public int UserId { get; set; }
+
+        public int IsDeleted { get; set; }
     }
 }

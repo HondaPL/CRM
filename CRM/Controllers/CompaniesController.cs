@@ -26,10 +26,10 @@ namespace CRM.Controllers
 
         // GET: Companies
         [Authorize]
-        public async Task<IActionResult> Index(DateTime? start, DateTime? end, string category, string[] selected, int page = 1, string sortExpression = "Id")
+        public async Task<IActionResult> Index(DateTime? start, DateTime? end, string category, int[] selected, int page = 1, string sortExpression = "Id")
         {
             //var qry = _context.Company.AsNoTracking().OrderBy(p => p.Id);
-            var qry = _context.Company.AsNoTracking().OrderBy(p => p.Id).AsQueryable();
+            var qry = _context.Company.AsNoTracking().OrderBy(p => p.Id).AsQueryable().Where(p => p.IsDeleted == 0);
             var qry1 = _context.Business.AsNoTracking().OrderBy(p => p.Id).AsQueryable();
             //Console.WriteLine(start?.ToString("yyyy-MM-dd"));
             //Console.WriteLine(end?.ToString("yyyy-MM-dd"));
@@ -37,7 +37,7 @@ namespace CRM.Controllers
             var user = await _context.User.FirstOrDefaultAsync(m => m.Login == User.FindFirst("user").Value);
             ViewBag.start = start?.ToString("yyyy-MM-dd");
             ViewBag.end = end?.ToString("yyyy-MM-dd");
-            ViewBag.userId = Convert.ToString(user.Id);
+            ViewBag.userId = user.Id;
             //Console.WriteLine(category);
             //Console.WriteLine(selected);
             for(int x = 0; x < selected.Length; x++)
@@ -79,7 +79,7 @@ namespace CRM.Controllers
                 //                on Convert.ToInt32(Company.BusinessId) equals Business.Id
                 //            select new { Company};
 
-                string[] data = new string[100];
+                int[] data = new int[100];
                 var q = 0;
                 for (int x = 0; x < selected.Length; x++)
                 {
@@ -172,7 +172,7 @@ namespace CRM.Controllers
                 { "end", end }
             };
             List<Business> businessesList = _context.Business.ToList();
-            string[] businesses = new string[100];
+            string[] businesses = new string[businessesList[businessesList.Count - 1].Id + 1];
             var i = 1;
             foreach (var item in businessesList)
             {
@@ -181,10 +181,11 @@ namespace CRM.Controllers
             }
             ViewBag.data = businesses;
             List<User> usersList = _context.User.ToList();
-            string[] users = new string[100];
+            string[] users = new string[usersList[usersList.Count - 1].Id + 1];
             var j = 1;
             foreach (var item in usersList)
             {
+                Console.WriteLine(j);
                 j = item.Id;
                 users[j] = item.Name;
             }
@@ -209,9 +210,9 @@ namespace CRM.Controllers
             {
                 return NotFound();
             }
-            ViewBag.userId = Convert.ToString(user.Id);
+            ViewBag.userId = user.Id;
             List<Business> businessesList = _context.Business.ToList();
-            string[] businesses = new string[100];
+            string[] businesses = new string[businessesList[businessesList.Count - 1].Id + 1];
             var i = 1;
             foreach (var item in businessesList)
             {
@@ -220,7 +221,7 @@ namespace CRM.Controllers
             }
             ViewBag.data = businesses;
             List<User> usersList = _context.User.ToList();
-            string[] users = new string[100];
+            string[] users = new string[usersList[usersList.Count - 1].Id + 1];
             var j = 1;
             foreach (var item in usersList)
             {
@@ -253,12 +254,13 @@ namespace CRM.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,NIP,BusinessId,Address,City,UserId,CreationDate")] Company company)
+        public async Task<IActionResult> Create(Company company)
         {
             //return View(model.Company);
             if (ModelState.IsValid)
             {
-                try { 
+                try {
+                company.IsDeleted = 0;
                 _context.Add(company);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -293,7 +295,7 @@ namespace CRM.Controllers
             {
                 return NotFound();
             }
-            if (Convert.ToString(user.Id) != company.UserId)
+            if (user.Id != company.UserId)
             {
                 return NotFound();
             }
@@ -305,7 +307,7 @@ namespace CRM.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,NIP,BusinessId,Address,City,UserId,CreationDate")] Company company)
+        public async Task<IActionResult> Edit(int id, Company company)
         {
             if (id != company.Id)
             {
@@ -358,7 +360,7 @@ namespace CRM.Controllers
             {
                 return NotFound();
             }
-            if (Convert.ToString(user.Id) != company.UserId)
+            if (user.Id != company.UserId)
             {
                 return NotFound();
             }
@@ -380,7 +382,7 @@ namespace CRM.Controllers
                 users[j] = item.Name;
             }
             ViewBag.data2 = users;
-            ViewBag.userId = Convert.ToString(user.Id);
+            ViewBag.userId = user.Id;
             return View(company);
         }
 
@@ -391,23 +393,25 @@ namespace CRM.Controllers
         {
             var company = await _context.Company.FindAsync(id);
 
-            var noteNumber = await _context.Note.CountAsync(m => m.CompanyId == Convert.ToString(company.Id));
+            /*var noteNumber = await _context.Note.CountAsync(m => m.CompanyId == company.Id);
             while (noteNumber > 0)
             {
-                var noteToDelete = await _context.Note.FirstOrDefaultAsync(m => m.CompanyId == Convert.ToString(company.Id));
+                var noteToDelete = await _context.Note.FirstOrDefaultAsync(m => m.CompanyId == company.Id);
                 _context.Note.Remove(noteToDelete);
                 await _context.SaveChangesAsync();
                 noteNumber--;
             }
-            var contactNumber = await _context.Contact.CountAsync(m => m.CompanyId == Convert.ToString(company.Id));
+            var contactNumber = await _context.Contact.CountAsync(m => m.CompanyId == company.Id);
             while (contactNumber > 0)
             {
-                var contactToDelete = await _context.Contact.FirstOrDefaultAsync(m => m.CompanyId == Convert.ToString(company.Id));
+                var contactToDelete = await _context.Contact.FirstOrDefaultAsync(m => m.CompanyId == company.Id);
                 _context.Contact.Remove(contactToDelete);
                 await _context.SaveChangesAsync();
                 contactNumber--;
             }
             _context.Company.Remove(company);
+            */
+            company.IsDeleted = 1;
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
