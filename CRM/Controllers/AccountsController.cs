@@ -378,7 +378,7 @@ namespace CRM.Controllers
         {
             var user = await _context.User.FindAsync(id);
             var adminnumber = await _context.User.CountAsync(m => m.RoleId == 1);
-            Console.Write(adminnumber);
+            //Console.Write(adminnumber);
             ViewBag.Message = null;
             if (adminnumber > 2 || user.RoleId != 1)
             {

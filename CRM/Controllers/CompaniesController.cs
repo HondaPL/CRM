@@ -42,7 +42,7 @@ namespace CRM.Controllers
             //Console.WriteLine(selected);
             for(int x = 0; x < selected.Length; x++)
             {
-                Console.WriteLine(selected[x]);
+                //Console.WriteLine(selected[x]);
             }
             //DateTime dt = new DateTime();
             //if (start == dt)
@@ -83,7 +83,7 @@ namespace CRM.Controllers
                 var q = 0;
                 for (int x = 0; x < selected.Length; x++)
                 {
-                    Console.WriteLine(selected[x]);
+                    //Console.WriteLine(selected[x]);
                     data[q] = selected[x];
                     //Console.WriteLine(number.Id);
                     q++;
@@ -185,7 +185,7 @@ namespace CRM.Controllers
             var j = 1;
             foreach (var item in usersList)
             {
-                Console.WriteLine(j);
+                //Console.WriteLine(j);
                 j = item.Id;
                 users[j] = item.Name;
             }

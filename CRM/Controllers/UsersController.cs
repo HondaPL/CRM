@@ -155,7 +155,7 @@ namespace CRM.Controllers
                             return RedirectToAction("Index");
                         } else
                         {
-                            ViewBag.Message = String.Format("You cannot delete more admins! There must be at least 2 of them!");
+                            ViewBag.Message = String.Format("You cannot demote more admins! There must be at least 2 of them!");
                             return View(user);
                         }
                     }
@@ -241,7 +241,6 @@ namespace CRM.Controllers
 
             var user = await _context.User.FindAsync(id);
             var adminnumber = await _context.User.CountAsync(m => m.RoleId == 1);
-            Console.Write(adminnumber);
             ViewBag.Message = null;
             if (adminnumber > 2 || user.RoleId != 1) {
                 /*var companyNumber = await _context.Company.CountAsync(m => m.UserId == user.Id);
@@ -291,7 +290,7 @@ namespace CRM.Controllers
                 return RedirectToAction(nameof(Index));
             }   else
             {
-                ViewBag.Message = String.Format("You cannot demote more admins! There must be at least 2 of them!");
+                ViewBag.Message = String.Format("You cannot delete more admins! There must be at least 2 of them!");
                 return View(user);
             }
         }
