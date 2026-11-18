@@ -195,6 +195,13 @@ namespace CRM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,User user)
         {
+            var currentUser = await _context.User.AsNoTracking().FirstOrDefaultAsync(m => m.Login == User.FindFirst("user").Value);
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
+            user.Id = currentUser.Id;
+            user.RoleId = currentUser.RoleId;
             if (id != user.Id)
             {
                 return NotFound();
